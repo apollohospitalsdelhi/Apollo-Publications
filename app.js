@@ -149,7 +149,7 @@ function sharePaper(pub) {
 }
 
 function goToApollo() {
-    window.location.href = '/apollo_publications/';
+    window.location.href = '/apollo-publications/';
 }
 
 async function fetchPublications() {
