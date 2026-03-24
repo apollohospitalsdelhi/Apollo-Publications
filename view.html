@@ -52,5 +52,16 @@
 
     <div id="toast" class="toast" data-testid="toast"></div>
     <script src="app.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.body.addEventListener("click", function (e) {
+        if (e.target.innerText === "✖" || e.target.innerText === "X") {
+            window.location.href = "https://apollohospitalsdelhi.github.io/Apollo-Publications/";
+        }
+    });
+});
+</script>
+
+    
 </body>
 </html>
