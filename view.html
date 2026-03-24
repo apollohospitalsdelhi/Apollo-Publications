@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Hospitals - Publication</title>
+    <meta name="description" content="Apollo Hospitals academic publication. Advancing Healthcare Through Research.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="logo.png" type="image/png">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-06J0QX1N1Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-06J0QX1N1Z');
+    </script>
+</head>
+<body>
+    <div class="background-page">
+        <header class="bg-header">
+            <div class="bg-container">
+                <img src="logo.png" alt="Apollo Hospitals" class="bg-logo">
+                <div class="bg-tagline">
+                    <p class="tagline-main">Advancing Healthcare Through Research.</p>
+                    <p class="tagline-sub">Apollo Hospitals has over 1000 Publications in a Single Year</p>
+                </div>
+            </div>
+        </header>
+        <div class="bg-container bg-footer-note">
+            <p>Visit <a href="https://www.apollohospitals.com/academics-research/clinical-research/recognition-of-published-papers">apollohospitals.com</a> to explore all publications.</p>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-fullscreen">
+        <div class="spinner"></div>
+        <span>Loading publication...</span>
+    </div>
+
+    <div id="error-state" class="error-fullscreen" style="display:none;"></div>
+
+    <div id="modal-overlay" class="modal-overlay">
+        <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <div class="modal-content">
+                <button id="close-btn" class="close-btn" aria-label="Close" data-testid="button-close-modal">&times;</button>
+                <div class="modal-brand">
+                    <img src="logo.png" alt="Apollo Hospitals" class="modal-logo">
+                </div>
+                <div id="modal-body" data-testid="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" data-testid="toast"></div>
+    <script src="app.js"></script>
+</body>
+</html>

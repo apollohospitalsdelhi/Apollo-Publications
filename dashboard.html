@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Hospitals - Analytics Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="logo.png" type="image/png">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-06J0QX1N1Z"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-06J0QX1N1Z');
+    </script>
+    <style>
+        body {
+            overflow: auto;
+        }
+        .dash-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .dash-header {
+            background: linear-gradient(160deg, var(--apollo-blue-deep) 0%, var(--apollo-blue) 100%);
+            padding: 32px 0;
+            margin-bottom: 32px;
+            color: var(--white);
+        }
+        .dash-header-inner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .dash-header img {
+            height: 44px;
+        }
+        .dash-header h1 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 400;
+        }
+        .login-card {
+            max-width: 380px;
+            margin: 80px auto;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 40px 36px;
+            box-shadow: 0 4px 16px rgba(0,43,82,0.06);
+        }
+        .login-card h2 {
+            font-family: var(--font-serif);
+            font-weight: 400;
+            font-size: 1.4rem;
+            margin-bottom: 8px;
+            color: var(--apollo-blue-dark);
+        }
+        .login-card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+        .login-card label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-family: var(--font-sans);
+            margin-bottom: 16px;
+            transition: border-color 0.15s;
+        }
+        .login-card input:focus {
+            outline: none;
+            border-color: var(--apollo-blue);
+            box-shadow: 0 0 0 3px rgba(0,91,171,0.1);
+        }
+        .login-error {
+            color: #c0392b;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .summary-card {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px 24px;
+        }
+        .summary-card .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+            margin-bottom: 4px;
+        }
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--apollo-blue-dark);
+        }
+        .stats-table-wrap {
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 60px;
+        }
+        .stats-table-wrap h3 {
+            font-family: var(--font-serif);
+            font-weight: 400;
+            font-size: 1.15rem;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .stats-table th {
+            text-align: left;
+            padding: 12px 24px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+            background: var(--off-white);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+        }
+        .stats-table td {
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--light-grey);
+            color: var(--text-secondary);
+        }
+        .stats-table tr:last-child td {
+            border-bottom: none;
+        }
+        .stats-table tr:hover td {
+            background: var(--off-white);
+        }
+        .stats-table .paper-id {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--apollo-blue);
+        }
+        .stats-table .views-count {
+            font-weight: 600;
+            color: var(--apollo-blue-dark);
+        }
+        .stats-table .last-visit {
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--muted);
+            font-style: italic;
+        }
+        .dash-loading {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .logout-btn {
+            float: right;
+            background: none;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: rgba(255,255,255,0.8);
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.15s;
+        }
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+        }
+        @media (max-width: 640px) {
+            .stats-table th, .stats-table td {
+                padding: 10px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-view">
+        <div class="login-card">
+            <img src="logo.png" alt="Apollo Hospitals" style="height:36px;margin-bottom:24px;">
+            <h2>Analytics Dashboard</h2>
+            <p>Sign in to view publication visitor statistics.</p>
+            <form id="login-form">
+                <label for="username">Username</label>
+                <input type="text" id="username" data-testid="input-username" autocomplete="username" required>
+                <label for="password">Password</label>
+                <input type="password" id="password" data-testid="input-password" autocomplete="current-password" required>
+                <div id="login-error" class="login-error" data-testid="text-login-error"></div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;" data-testid="button-login">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="dashboard-view" style="display:none;">
+        <div class="dash-header">
+            <div class="dash-container">
+                <div class="dash-header-inner">
+                    <img src="logo.png" alt="Apollo Hospitals">
+                    <h1>Analytics Dashboard</h1>
+                    <button class="logout-btn" id="logout-btn" data-testid="button-logout">Sign Out</button>
+                </div>
+            </div>
+        </div>
+        <div class="dash-container">
+            <div id="dash-loading" class="dash-loading">
+                <div class="spinner"></div>
+                <span>Loading analytics...</span>
+            </div>
+            <div id="dash-content" style="display:none;">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="label">Total Page Views</div>
+                        <div class="value" id="stat-total" data-testid="text-total-views">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="label">Listing Page Views</div>
+                        <div class="value" id="stat-index" data-testid="text-index-views">0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="label">Papers Tracked</div>
+                        <div class="value" id="stat-papers" data-testid="text-papers-count">0</div>
+                    </div>
+                </div>
+                <div class="stats-table-wrap">
+                    <h3>Visitor Counts by Paper</h3>
+                    <div id="table-container" data-testid="table-stats"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var authHeader = '';
+
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var user = document.getElementById('username').value;
+            var pass = document.getElementById('password').value;
+            var errorEl = document.getElementById('login-error');
+
+            authHeader = 'Basic ' + btoa(user + ':' + pass);
+
+            fetch('/api/stats', {
+                headers: { 'Authorization': authHeader }
+            })
+            .then(function(res) {
+                if (res.status === 401) {
+                    throw new Error('Invalid username or password.');
+                }
+                if (!res.ok) throw new Error('Server error. Please try again.');
+                return res.json();
+            })
+            .then(function(data) {
+                errorEl.style.display = 'none';
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('dashboard-view').style.display = 'block';
+                renderDashboard(data);
+            })
+            .catch(function(err) {
+                errorEl.textContent = err.message;
+                errorEl.style.display = 'block';
+            });
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            authHeader = '';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'none';
+            document.getElementById('login-view').style.display = 'block';
+        });
+
+        function formatDate(iso) {
+            if (!iso) return '-';
+            var d = new Date(iso);
+            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + ' ' +
+                   d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+        }
+
+        function renderDashboard(data) {
+            document.getElementById('dash-loading').style.display = 'none';
+            document.getElementById('dash-content').style.display = 'block';
+
+            document.getElementById('stat-total').textContent = data.totalViews.toLocaleString();
+            document.getElementById('stat-index').textContent = data.indexViews.toLocaleString();
+            document.getElementById('stat-papers').textContent = data.papers.length.toLocaleString();
+
+            var container = document.getElementById('table-container');
+
+            if (data.papers.length === 0) {
+                container.innerHTML = '<div class="empty-state">No paper views recorded yet. Visitor data will appear here once papers are viewed.</div>';
+                return;
+            }
+
+            var html = '<table class="stats-table"><thead><tr>' +
+                '<th>#</th><th>Paper ID</th><th>Views</th><th>Last Visited</th>' +
+                '</tr></thead><tbody>';
+
+            for (var i = 0; i < data.papers.length; i++) {
+                var p = data.papers[i];
+                html += '<tr>' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td class="paper-id">' + escapeHtml(p.paperId) + '</td>' +
+                    '<td class="views-count">' + p.views.toLocaleString() + '</td>' +
+                    '<td class="last-visit">' + formatDate(p.lastVisited) + '</td>' +
+                    '</tr>';
+            }
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
